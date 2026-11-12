@@ -23,7 +23,7 @@ as.IDate.numeric = function(x, origin = "1970-01-01", ...) {
   if (origin=="1970-01-01") {
     # standard epoch
     nm = names(x)
-    x = as.integer(x)
+    x = as.integer(if (is.integer(x)) x else floor(unclass(x)))
     class(x) = c("IDate", "Date")
     # We used to use structure() here because class(x)<- copied several times in R before v3.1.0
     # Since R 3.1.0 improved class()<- and data.table's oldest oldest supported R is now >3.1.0, we can use class<- again
@@ -38,7 +38,7 @@ as.IDate.numeric = function(x, origin = "1970-01-01", ...) {
 
 as.IDate.Date = function(x, ...) {
   nm = names(x)
-  x = as.integer(x)                 # if already integer, x will be left unchanged as the original input
+  x = as.integer(if (is.integer(x)) x else floor(unclass(x)))                 # if already integer, x will be left unchanged as the original input
   class(x) = c("IDate", "Date")     # class()<- will copy if as.integer() did not create, and may not if it did we hope
   copy_names(x, nm)
 }
